@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 
@@ -17,6 +18,9 @@ app.get('/', (req, res) => {
 
 // Task Routes
 app.use('/api/tasks', require('./routes/taskRoutes'));
+
+// Authentication Routes
+app.use('/api/auth', authRoutes);
 
 const startServer = async () => {
     await connectDB();
