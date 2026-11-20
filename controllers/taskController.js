@@ -1,4 +1,3 @@
-
 const Task = require('../models/Task');
 
 // CREATE TASK
@@ -6,11 +5,19 @@ const createTask = async (req, res) => {
     try {
         const { title, description, status, dueDate } = req.body;
 
+        if (!title) {
+            return res.status(400).json({
+                success: false,
+                message: 'Task title is required'
+            });
+        }
+
         const task = await Task.create({
             title,
             description,
             status,
-            dueDate
+            dueDate,
+            user: req.user.id
         });
 
         res.status(201).json({
@@ -27,13 +34,31 @@ const createTask = async (req, res) => {
     }
 };
 
-// GET ALL TASKS
+// GET ALL TASKS WITH PAGINATION & SEARCH
 const getTasks = async (req, res) => {
     try {
-        const tasks = await Task.find().sort({ createdAt: -1 });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const search = req.query.search || '';
+
+        const filter = search
+            ? { title: { $regex: search, $options: 'i' } }
+            : {};
+
+        const tasks = await Task.find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const totalTasks = await Task.countDocuments(filter);
 
         res.status(200).json({
             success: true,
+            currentPage: page,
+            totalPages: Math.ceil(totalTasks / limit),
+            totalTasks,
             data: tasks
         });
 
@@ -73,11 +98,7 @@ const getTaskById = async (req, res) => {
 // UPDATE TASK
 const updateTask = async (req, res) => {
     try {
-        const task = await Task.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true, runValidators: true }
-        );
+        const task = await Task.findById(req.params.id);
 
         if (!task) {
             return res.status(404).json({
@@ -85,6 +106,26 @@ const updateTask = async (req, res) => {
                 message: 'Task not found'
             });
         }
+
+        if (
+            req.user.role !== 'admin' &&
+            task.user.toString() !== req.user.id
+        ) {
+            return res.status(403).json({
+                success: false,
+                message: 'You can only update your own tasks'
+            });
+        }
+
+       const { title, description, status, dueDate } = req.body;
+
+if (title !== undefined) task.title = title;
+if (description !== undefined) task.description = description;
+if (status !== undefined) task.status = status;
+if (dueDate !== undefined) task.dueDate = dueDate;
+
+await task.save();
+        await task.save();
 
         res.status(200).json({
             success: true,
@@ -103,7 +144,7 @@ const updateTask = async (req, res) => {
 // DELETE TASK
 const deleteTask = async (req, res) => {
     try {
-        const task = await Task.findByIdAndDelete(req.params.id);
+        const task = await Task.findById(req.params.id);
 
         if (!task) {
             return res.status(404).json({
@@ -111,6 +152,18 @@ const deleteTask = async (req, res) => {
                 message: 'Task not found'
             });
         }
+
+        if (
+            req.user.role !== 'admin' &&
+            (!task.user || task.user.toString() !== req.user.id)
+        ) {
+            return res.status(403).json({
+                success: false,
+                message: 'You can only delete your own tasks'
+            });
+        }
+
+        await task.deleteOne();
 
         res.status(200).json({
             success: true,

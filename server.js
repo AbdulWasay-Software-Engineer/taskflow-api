@@ -3,7 +3,9 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config();
 
@@ -21,6 +23,9 @@ app.use('/api/tasks', require('./routes/taskRoutes'));
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+
+// Admin Routes
+app.use('/api/admin', adminRoutes);
 
 const startServer = async () => {
     await connectDB();
