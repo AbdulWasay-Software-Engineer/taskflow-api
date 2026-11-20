@@ -1,36 +1,105 @@
-# 🚀 TaskFlow API – RESTful Task Management System
+# TaskFlow API – Backend Development Internship
 
-TaskFlow API is a RESTful backend application built with **Node.js, Express.js, MongoDB, and Mongoose**. It provides APIs to create, retrieve, update, and delete tasks.
+A RESTful Task Management API built using **Node.js, Express.js, MongoDB, and Mongoose**. This project was developed as part of my Backend Development Internship at **InternDom**.
 
-This project was developed as **Internship Task 1** to practice backend development, REST API architecture, database integration, and API testing using Postman.
+The API provides task management, JWT authentication, role-based access control, pagination, and search functionality.
 
-## ✨ Features
+## 🚀 Technologies Used
 
-- Create new tasks
-- Retrieve all tasks
-- Retrieve a single task by ID
-- Update existing tasks
-- Delete tasks
-- MongoDB Atlas database integration
-- Environment variable configuration using dotenv
-- Cross-Origin Resource Sharing (CORS)
-- Task timestamps using Mongoose
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- Express.js
+- JSON Web Token (JWT)
+- bcryptjs
+- Postman
+- dotenv
+- CORS
 
-## 🛠️ Technologies Used
+## 📌 Completed Tasks
 
-| Technology | Purpose |
-|---|---|
-| Node.js | JavaScript runtime |
-| Express.js | Backend framework |
-| MongoDB Atlas | Cloud database |
-| Mongoose | MongoDB object modeling |
-| dotenv | Environment configuration |
-| CORS | Cross-origin resource sharing |
-| Nodemon | Automatic server restart |
-| Postman | API testing |
-| Git & GitHub | Version control |
+### Task 1 – Task Management CRUD API
 
-## 📁 Project Structure
+Implemented a RESTful API to manage tasks.
+
+**Features:**
+- Create a new task.
+- Retrieve all tasks.
+- Retrieve a single task by ID.
+- Update an existing task.
+- Delete a task.
+- Input validation and error handling.
+- MongoDB database integration using Mongoose.
+
+**Task Model:**
+- Title
+- Description
+- Status
+- Due Date
+
+**API Endpoints:**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/tasks` | Create task |
+| GET | `/api/tasks` | Get all tasks |
+| GET | `/api/tasks/:id` | Get task by ID |
+| PUT | `/api/tasks/:id` | Update task |
+| DELETE | `/api/tasks/:id` | Delete task |
+
+### Task 2 – JWT Authentication
+
+Implemented secure user authentication using JSON Web Tokens.
+
+**Features:**
+- User signup and login.
+- Password hashing using bcryptjs.
+- JWT token generation.
+- Token verification middleware.
+- Protected user profile route.
+- Duplicate email validation.
+- Unauthorized access handling.
+
+**API Endpoints:**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/signup` | Register user |
+| POST | `/api/auth/login` | Login user |
+| GET | `/api/auth/profile` | Get authenticated user profile |
+
+**Authentication:**  
+Protected routes require a Bearer Token in the Authorization header.
+
+### Task 3 – Role-Based Access Control (RBAC)
+
+Implemented role-based authorization to manage user permissions.
+
+**Features:**
+- Two user roles: Admin and User.
+- Role included in JWT payload.
+- Custom role authorization middleware.
+- Admin dashboard protected for admin users.
+- Users can update and delete only their own tasks.
+- Admins can update and delete any task.
+- Pagination using `page` and `limit`.
+- Search tasks by title.
+- HTTP 403 response for unauthorized actions.
+
+**Pagination Example:**
+
+`GET /api/tasks?page=1&limit=5`
+
+**Search Example:**
+
+`GET /api/tasks?search=Learn`
+
+**Admin Dashboard:**
+
+`GET /api/admin/dashboard`
+
+## 📂 Project Structure
 
 ```text
 TASKFLOW-Api/
@@ -39,195 +108,9 @@ TASKFLOW-Api/
 │   └── db.js
 │
 ├── controllers/
+│   ├── authController.js
 │   └── taskController.js
 │
 ├── middleware/
-│
-├── models/
-│   └── Task.js
-│
-├── routes/
-│   └── taskRoutes.js
-│
-├── .env
-├── .gitignore
-├── server.js
-├── package.json
-├── package-lock.json
-└── README.md
-```
-
-## ⚙️ Installation & Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/YOUR-USERNAME/TASKFLOW-Api.git
-```
-
-### 2. Navigate to Project Folder
-
-```bash
-cd TASKFLOW-Api
-```
-
-### 3. Install Dependencies
-
-```bash
-npm install
-```
-
-### 4. Configure Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-```
-
-Replace the MongoDB URI with your own MongoDB Atlas connection string.
-
-**Important:** Never upload your `.env` file or database credentials to GitHub.
-
-### 5. Start Development Server
-
-```bash
-npm run dev
-```
-
-Or start normally:
-
-```bash
-npm start
-```
-
-Server URL:
-
-```text
-http://localhost:5000
-```
-
-## 🔗 API Endpoints
-
-Base URL:
-
-```text
-http://localhost:5000/api/tasks
-```
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/tasks` | Create a new task |
-| GET | `/api/tasks` | Get all tasks |
-| GET | `/api/tasks/:id` | Get task by ID |
-| PUT | `/api/tasks/:id` | Update a task |
-| DELETE | `/api/tasks/:id` | Delete a task |
-
-## 📝 API Usage Examples
-
-### 1. Create Task – POST
-
-**Endpoint:**
-
-```text
-POST /api/tasks
-```
-
-**Request Body:**
-
-```json
-{
-  "title": "Learn Node.js",
-  "description": "Complete TaskFlow API",
-  "status": "pending",
-  "dueDate": "2026-11-10"
-}
-```
-
-### 2. Get All Tasks – GET
-
-```text
-GET /api/tasks
-```
-
-### 3. Get Single Task – GET
-
-```text
-GET /api/tasks/TASK_ID
-```
-
-Replace `TASK_ID` with the actual MongoDB document ID.
-
-### 4. Update Task – PUT
-
-```text
-PUT /api/tasks/TASK_ID
-```
-
-**Request Body:**
-
-```json
-{
-  "title": "Learn Express.js",
-  "description": "Updated Task Description",
-  "status": "in-progress"
-}
-```
-
-### 5. Delete Task – DELETE
-
-```text
-DELETE /api/tasks/TASK_ID
-```
-
-## 📊 Task Model
-
-Each task contains the following fields:
-
-| Field | Type | Description |
-|---|---|---|
-| title | String | Task title (required) |
-| description | String | Task description |
-| status | String | pending, in-progress, completed |
-| dueDate | Date | Task deadline |
-| createdAt | Date | Automatically generated |
-| updatedAt | Date | Automatically updated |
-
-Default task status: `pending`
-
-## 🧪 API Testing
-
-All API endpoints can be tested using **Postman**.
-
-1. Open Postman.
-2. Create a new HTTP request.
-3. Enter the API endpoint.
-4. Select the appropriate HTTP method.
-5. Add JSON data for POST and PUT requests.
-6. Click Send and check the response.
-
-## 🎯 Learning Outcomes
-
-Through this project, I practiced:
-
-- Building RESTful APIs using Express.js
-- Implementing CRUD operations
-- Connecting Node.js with MongoDB Atlas
-- Creating Mongoose schemas and models
-- Organizing backend code using MVC-style structure
-- Configuring environment variables
-- Testing APIs using Postman
-- Managing source code using Git and GitHub
-
-## 👨‍💻 Developer
-
-**Abdul Wasay Ali**
-
-- GitHub: [aw3922179-source](https://github.com/AbdulWasay-Software-Engineer)
-- Project: TaskFlow API
-- Internship: Backend Development
-
----
-
-⭐ If you find this project useful, feel free to explore the repository!
+│   ├── authMiddleware.js
+│   └
