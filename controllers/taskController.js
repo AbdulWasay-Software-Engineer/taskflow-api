@@ -1,6 +1,8 @@
 const Task = require('../models/Task');
+const upload = require('../middleware/uploadMiddleware');
 
 // CREATE TASK
+
 const createTask = async (req, res) => {
     try {
         const { title, description, status, dueDate } = req.body;
@@ -17,7 +19,8 @@ const createTask = async (req, res) => {
             description,
             status,
             dueDate,
-            user: req.user.id
+            user: req.user.id,
+            image: req.file ? `/uploads/${req.file.filename}` : ''
         });
 
         res.status(201).json({
@@ -33,6 +36,7 @@ const createTask = async (req, res) => {
         });
     }
 };
+
 
 // GET ALL TASKS WITH PAGINATION & SEARCH
 const getTasks = async (req, res) => {
